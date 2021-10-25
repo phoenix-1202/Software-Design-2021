@@ -1,5 +1,5 @@
 package ru.akirakozov.sd.refactoring;
 
 public enum SQLType {
-    CREATE_DROP, SUM_COUNT, MIN_MAX
+    CREATE_INSERT_DROP, SUM_COUNT, MIN__MAX__GET_PRODUCTS
 }

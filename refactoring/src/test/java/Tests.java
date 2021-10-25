@@ -26,7 +26,7 @@ public class Tests {
                 "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                 " NAME           TEXT    NOT NULL, " +
                 " PRICE          INT     NOT NULL)";
-        DatabaseUtils.dbCommand(null, SQLType.CREATE_DROP, sql, "");
+        DatabaseUtils.dbCommand(null, SQLType.CREATE_INSERT_DROP, sql, "");
 
         server = new Server(8081);
 
@@ -111,7 +111,7 @@ public class Tests {
     @After
     public void postprocess() throws Exception {
         String sql = "DROP TABLE IF EXISTS PRODUCT";
-        DatabaseUtils.dbCommand(null, SQLType.CREATE_DROP, sql, "");
+        DatabaseUtils.dbCommand(null, SQLType.CREATE_INSERT_DROP, sql, "");
         server.stop();
     }
 }

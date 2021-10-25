@@ -12,14 +12,15 @@ public class DatabaseUtils {
         try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
             Statement stmt = c.createStatement();
             ResultSet rs;
+
             switch (type) {
-                case CREATE_DROP:
+                case CREATE_INSERT_DROP:
                     stmt.executeUpdate(sql);
                     break;
-                case MIN_MAX:
+                case MIN__MAX__GET_PRODUCTS:
                     rs = stmt.executeQuery(sql);
                     response.getWriter().println("<html><body>");
-                    response.getWriter().println("<h1>Product with " + phraseToAnswer + " price: </h1>");
+                    response.getWriter().print(phraseToAnswer);
 
                     while (rs.next()) {
                         String name = rs.getString("name");
@@ -43,6 +44,7 @@ public class DatabaseUtils {
                     rs.close();
                     break;
             }
+
             stmt.close();
         }
     }

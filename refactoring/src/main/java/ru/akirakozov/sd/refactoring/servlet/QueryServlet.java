@@ -18,10 +18,10 @@ public class QueryServlet extends HttpServlet {
         try {
             switch (command) {
                 case "min":
-                    DatabaseUtils.dbCommand(response, SQLType.MIN_MAX, "SELECT * FROM PRODUCT ORDER BY PRICE LIMIT 1", "min");
+                    DatabaseUtils.dbCommand(response, SQLType.MIN__MAX__GET_PRODUCTS, "SELECT * FROM PRODUCT ORDER BY PRICE LIMIT 1", "<h1>Product with min price: </h1>\n");
                     break;
                 case "max":
-                    DatabaseUtils.dbCommand(response, SQLType.MIN_MAX, "SELECT * FROM PRODUCT ORDER BY PRICE DESC LIMIT 1", "max");
+                    DatabaseUtils.dbCommand(response, SQLType.MIN__MAX__GET_PRODUCTS, "SELECT * FROM PRODUCT ORDER BY PRICE DESC LIMIT 1", "<h1>Product with max price: </h1>\n");
                     break;
                 case "sum":
                     DatabaseUtils.dbCommand(response, SQLType.SUM_COUNT, "SELECT SUM(price) FROM PRODUCT", "Summary price: ");
