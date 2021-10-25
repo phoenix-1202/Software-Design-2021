@@ -1,15 +1,13 @@
 package ru.akirakozov.sd.refactoring.servlet;
 
-import ru.akirakozov.sd.refactoring.DatabaseUtils;
 import ru.akirakozov.sd.refactoring.SQLType;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
+
+import static ru.akirakozov.sd.refactoring.DatabaseUtils.dbCommand;
 
 /**
  * @author akirakozov
@@ -23,7 +21,7 @@ public class AddProductServlet extends HttpServlet {
 
         try {
             String sql = "INSERT INTO PRODUCT (NAME, PRICE) VALUES (\"" + name + "\"," + price + ")";
-            DatabaseUtils.dbCommand(null, SQLType.CREATE_INSERT_DROP, sql, "");
+            dbCommand(null, SQLType.CREATE_INSERT_DROP, sql, "");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

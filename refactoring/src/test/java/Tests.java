@@ -16,6 +16,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
+import static ru.akirakozov.sd.refactoring.HTMLBuilder.*;
+
 public class Tests {
 
     private Server server;
@@ -70,35 +72,41 @@ public class Tests {
 
     @Test
     public void testWithNoProduct() throws Exception {
+        Assert.assertEquals(createHTML(), requestGet());
 
-        Assert.assertEquals("<html><body></body></html>", requestGet());
+        Assert.assertEquals(createHTML("Summary price: ", "0"), requestQuery("sum"));
 
-        Assert.assertEquals("<html><body>Summary price: 0</body></html>", requestQuery("sum"));
+        Assert.assertEquals(createHTML(tagWrap("h1", "Product with max price: ")), requestQuery("max"));
 
-        Assert.assertEquals("<html><body><h1>Product with max price: </h1></body></html>", requestQuery("max"));
+        Assert.assertEquals(createHTML(tagWrap("h1", "Product with min price: ")), requestQuery("min"));
 
-        Assert.assertEquals("<html><body><h1>Product with min price: </h1></body></html>", requestQuery("min"));
-
-        Assert.assertEquals("<html><body>Number of products: 0</body></html>", requestQuery("count"));
+        Assert.assertEquals(createHTML("Number of products: ", "0"), requestQuery("count"));
     }
 
     @Test
     public void testAllCommandsWithProducts() throws Exception {
-        Assert.assertEquals("OK", requestAdd("abc",500));
+        Assert.assertEquals("OK", requestAdd("abc", 500));
 
         Assert.assertEquals("OK", requestAdd("def", 300));
 
         Assert.assertEquals("OK", requestAdd("ghi", 700));
 
-        Assert.assertEquals("<html><body>abc\t500</br>def\t300</br>ghi\t700</br></body></html>", requestGet());
+        Assert.assertEquals(createHTML(
+                namePriceWrite("abc", 500),
+                namePriceWrite("def", 300),
+                namePriceWrite("ghi", 700)), requestGet());
 
-        Assert.assertEquals("<html><body>Summary price: 1500</body></html>", requestQuery("sum"));
+        Assert.assertEquals(createHTML("Summary price: ", "1500"), requestQuery("sum"));
 
-        Assert.assertEquals("<html><body><h1>Product with max price: </h1>ghi\t700</br></body></html>", requestQuery("max"));
+        Assert.assertEquals(createHTML(
+                tagWrap("h1", "Product with max price: "),
+                namePriceWrite("ghi", 700)), requestQuery("max"));
 
-        Assert.assertEquals("<html><body><h1>Product with min price: </h1>def	300</br></body></html>", requestQuery("min"));
+        Assert.assertEquals(createHTML(
+                tagWrap("h1", "Product with min price: "),
+                namePriceWrite("def", 300)), requestQuery("min"));
 
-        Assert.assertEquals("<html><body>Number of products: 3</body></html>", requestQuery("count"));
+        Assert.assertEquals(createHTML("Number of products: ", "3"), requestQuery("count"));
     }
 
     @Test
@@ -109,16 +117,24 @@ public class Tests {
         Assert.assertEquals("OK", requestAdd("wxz", 100));
         Assert.assertEquals("OK", requestAdd("pqr", 900));
 
-        Assert.assertEquals("<html><body>abc\t500</br>def\t300</br>ghi\t700</br>wxz\t100</br>pqr\t900</br></body></html>", requestGet());
+        Assert.assertEquals(createHTML(
+                namePriceWrite("abc", 500),
+                namePriceWrite("def", 300),
+                namePriceWrite("ghi", 700),
+                namePriceWrite("wxz", 100),
+                namePriceWrite("pqr", 900)), requestGet());
 
-        Assert.assertEquals("<html><body>Summary price: 2500</body></html>", requestQuery("sum"));
+        Assert.assertEquals(createHTML("Summary price: ", "2500"), requestQuery("sum"));
 
-        Assert.assertEquals("<html><body><h1>Product with max price: </h1>pqr\t900</br></body></html>", requestQuery("max"));
+        Assert.assertEquals(createHTML(
+                tagWrap("h1", "Product with max price: "),
+                namePriceWrite("pqr", 900)), requestQuery("max"));
 
-        Assert.assertEquals("<html><body><h1>Product with min price: </h1>wxz\t100</br></body></html>", requestQuery("min"));
+        Assert.assertEquals(createHTML(
+                tagWrap("h1", "Product with min price: "),
+                namePriceWrite("wxz", 100)), requestQuery("min"));
 
-        Assert.assertEquals("<html><body>Number of products: 5</body></html>", requestQuery("count"));
-
+        Assert.assertEquals(createHTML("Number of products: ", "5"), requestQuery("count"));
     }
 
     @After
