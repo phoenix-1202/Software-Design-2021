@@ -19,6 +19,7 @@ import java.net.URLConnection;
 public class Tests {
 
     private Server server;
+    private final String URL_PREFIX = "http://localhost:8081/";
 
     @Before
     public void preprocess() throws Exception {
@@ -55,37 +56,49 @@ public class Tests {
         return sb.toString();
     }
 
+    private String requestGet() throws Exception {
+        return request(URL_PREFIX + "get-products");
+    }
+
+    private String requestAdd(String name, int price) throws Exception {
+        return request(URL_PREFIX + "add-product?name=" + name + "&price=" + price);
+    }
+
+    private String requestQuery(String command) throws Exception {
+        return request(URL_PREFIX + "query?command=" + command);
+    }
+
     @Test
     public void testWithNoProduct() throws Exception {
 
-        Assert.assertEquals("<html><body></body></html>", request("http://localhost:8081/get-products"));
+        Assert.assertEquals("<html><body></body></html>", requestGet());
 
-        Assert.assertEquals("<html><body>Summary price: 0</body></html>", request("http://localhost:8081/query?command=sum"));
+        Assert.assertEquals("<html><body>Summary price: 0</body></html>", requestQuery("sum"));
 
-        Assert.assertEquals("<html><body><h1>Product with max price: </h1></body></html>", request("http://localhost:8081/query?command=max"));
+        Assert.assertEquals("<html><body><h1>Product with max price: </h1></body></html>", requestQuery("max"));
 
-        Assert.assertEquals("<html><body><h1>Product with min price: </h1></body></html>", request("http://localhost:8081/query?command=min"));
+        Assert.assertEquals("<html><body><h1>Product with min price: </h1></body></html>", requestQuery("min"));
 
-        Assert.assertEquals("<html><body>Number of products: 0</body></html>", request("http://localhost:8081/query?command=count"));
+        Assert.assertEquals("<html><body>Number of products: 0</body></html>", requestQuery("count"));
     }
 
     @Test
     public void testAllCommandsWithProducts() throws Exception {
-        Assert.assertEquals("OK", request("http://localhost:8081/add-product?name=abc&price=500"));
+        Assert.assertEquals("OK", requestAdd("abc",500));
 
-        Assert.assertEquals("OK", request("http://localhost:8081/add-product?name=def&price=300"));
+        Assert.assertEquals("OK", requestAdd("def", 300));
 
-        Assert.assertEquals("OK", request("http://localhost:8081/add-product?name=ghi&price=700"));
+        Assert.assertEquals("OK", requestAdd("ghi", 700));
 
-        Assert.assertEquals("<html><body>abc\t500</br>def\t300</br>ghi\t700</br></body></html>", request("http://localhost:8081/get-products"));
+        Assert.assertEquals("<html><body>abc\t500</br>def\t300</br>ghi\t700</br></body></html>", requestGet());
 
-        Assert.assertEquals("<html><body>Summary price: 1500</body></html>", request("http://localhost:8081/query?command=sum"));
+        Assert.assertEquals("<html><body>Summary price: 1500</body></html>", requestQuery("sum"));
 
-        Assert.assertEquals("<html><body><h1>Product with max price: </h1>ghi\t700</br></body></html>", request("http://localhost:8081/query?command=max"));
+        Assert.assertEquals("<html><body><h1>Product with max price: </h1>ghi\t700</br></body></html>", requestQuery("max"));
 
-        Assert.assertEquals("<html><body><h1>Product with min price: </h1>def	300</br></body></html>", request("http://localhost:8081/query?command=min"));
+        Assert.assertEquals("<html><body><h1>Product with min price: </h1>def	300</br></body></html>", requestQuery("min"));
 
-        Assert.assertEquals("<html><body>Number of products: 3</body></html>", request("http://localhost:8081/query?command=count"));
+        Assert.assertEquals("<html><body>Number of products: 3</body></html>", requestQuery("count"));
     }
 
     @Test
@@ -93,18 +106,18 @@ public class Tests {
 
         testAllCommandsWithProducts();
 
-        Assert.assertEquals("OK", request("http://localhost:8081/add-product?name=wxz&price=100"));
-        Assert.assertEquals("OK", request("http://localhost:8081/add-product?name=pqr&price=900"));
+        Assert.assertEquals("OK", requestAdd("wxz", 100));
+        Assert.assertEquals("OK", requestAdd("pqr", 900));
 
-        Assert.assertEquals("<html><body>abc\t500</br>def\t300</br>ghi\t700</br>wxz\t100</br>pqr\t900</br></body></html>", request("http://localhost:8081/get-products"));
+        Assert.assertEquals("<html><body>abc\t500</br>def\t300</br>ghi\t700</br>wxz\t100</br>pqr\t900</br></body></html>", requestGet());
 
-        Assert.assertEquals("<html><body>Summary price: 2500</body></html>", request("http://localhost:8081/query?command=sum"));
+        Assert.assertEquals("<html><body>Summary price: 2500</body></html>", requestQuery("sum"));
 
-        Assert.assertEquals("<html><body><h1>Product with max price: </h1>pqr\t900</br></body></html>", request("http://localhost:8081/query?command=max"));
+        Assert.assertEquals("<html><body><h1>Product with max price: </h1>pqr\t900</br></body></html>", requestQuery("max"));
 
-        Assert.assertEquals("<html><body><h1>Product with min price: </h1>wxz\t100</br></body></html>", request("http://localhost:8081/query?command=min"));
+        Assert.assertEquals("<html><body><h1>Product with min price: </h1>wxz\t100</br></body></html>", requestQuery("min"));
 
-        Assert.assertEquals("<html><body>Number of products: 5</body></html>", request("http://localhost:8081/query?command=count"));
+        Assert.assertEquals("<html><body>Number of products: 5</body></html>", requestQuery("count"));
 
     }
 

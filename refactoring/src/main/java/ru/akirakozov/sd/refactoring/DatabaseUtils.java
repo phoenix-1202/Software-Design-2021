@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Objects;
 
 public class DatabaseUtils {
 
@@ -20,7 +21,8 @@ public class DatabaseUtils {
                 case MIN__MAX__GET_PRODUCTS:
                     rs = stmt.executeQuery(sql);
                     response.getWriter().println("<html><body>");
-                    response.getWriter().print(phraseToAnswer);
+                    if (!Objects.equals(phraseToAnswer, ""))
+                        response.getWriter().print("<h1>" + phraseToAnswer + "</h1>");
 
                     while (rs.next()) {
                         String name = rs.getString("name");
