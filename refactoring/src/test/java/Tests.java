@@ -5,6 +5,8 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import ru.akirakozov.sd.refactoring.DatabaseUtils;
+import ru.akirakozov.sd.refactoring.SQLType;
 import ru.akirakozov.sd.refactoring.servlet.AddProductServlet;
 import ru.akirakozov.sd.refactoring.servlet.GetProductsServlet;
 import ru.akirakozov.sd.refactoring.servlet.QueryServlet;
@@ -13,9 +15,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
 
 public class Tests {
 
@@ -23,16 +22,11 @@ public class Tests {
 
     @Before
     public void preprocess() throws Exception {
-        try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
-            String sql = "CREATE TABLE IF NOT EXISTS PRODUCT" +
-                    "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                    " NAME           TEXT    NOT NULL, " +
-                    " PRICE          INT     NOT NULL)";
-            Statement stmt = c.createStatement();
-
-            stmt.executeUpdate(sql);
-            stmt.close();
-        }
+        String sql = "CREATE TABLE IF NOT EXISTS PRODUCT" +
+                "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                " NAME           TEXT    NOT NULL, " +
+                " PRICE          INT     NOT NULL)";
+        DatabaseUtils.dbCommand(null, SQLType.CREATE_DROP, sql, "");
 
         server = new Server(8081);
 
@@ -41,8 +35,8 @@ public class Tests {
         server.setHandler(context);
 
         context.addServlet(new ServletHolder(new AddProductServlet()), "/add-product");
-        context.addServlet(new ServletHolder(new GetProductsServlet()),"/get-products");
-        context.addServlet(new ServletHolder(new QueryServlet()),"/query");
+        context.addServlet(new ServletHolder(new GetProductsServlet()), "/get-products");
+        context.addServlet(new ServletHolder(new QueryServlet()), "/query");
 
         server.start();
     }
@@ -116,13 +110,8 @@ public class Tests {
 
     @After
     public void postprocess() throws Exception {
-        try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
-            String sql = "DROP TABLE IF EXISTS PRODUCT";
-            Statement stmt = c.createStatement();
-
-            stmt.executeUpdate(sql);
-            stmt.close();
-        }
+        String sql = "DROP TABLE IF EXISTS PRODUCT";
+        DatabaseUtils.dbCommand(null, SQLType.CREATE_DROP, sql, "");
         server.stop();
     }
 }
