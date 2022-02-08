@@ -26,5 +26,7 @@ public class Main {
         allStat.keySet().forEach(key -> System.out.println("Event " + key + ": " + allStat.get(key)));
         System.out.println("......................................\n");
         myStat.printStatistic();
+        System.out.println();
+        System.out.println("Event 3: " + myStat.getEventStatisticByName("3"));
     }
 }
